@@ -1,7 +1,5 @@
 FROM python:3.9-slim
 
-ARG SERVICE=suggestion
-
 # Set working directory
 WORKDIR /app
 
