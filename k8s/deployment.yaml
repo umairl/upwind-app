@@ -9,6 +9,7 @@ metadata:
   name: suggestion-config
   namespace: upwind
 data:
+  SERVICE: "suggestion"  # Added this!
   SERVICE_NAME: "suggestion"
   PORT: "8000"
   HOST: "0.0.0.0"
@@ -21,6 +22,7 @@ metadata:
   name: related-config
   namespace: upwind
 data:
+  SERVICE: "related"  # Added this!
   SERVICE_NAME: "related"
   PORT: "8001"
   HOST: "0.0.0.0"
@@ -33,6 +35,7 @@ metadata:
   name: multiagent-config
   namespace: upwind
 data:
+  SERVICE: "multiagent"  # Added this!
   SERVICE_NAME: "multiagent"
   PORT: "8002"
   HOST: "0.0.0.0"
@@ -59,7 +62,7 @@ spec:
     spec:
       containers:
         - name: suggestion
-          image: 841176797686.dkr.ecr.ap-south-1.amazonaws.com/upwind:latest
+          image: 841176797686.dkr.ecr.ap-south-1.amazonaws.com/upwind:IMAGE_TAG
           ports:
             - containerPort: 8000
           envFrom:
@@ -87,7 +90,7 @@ spec:
     spec:
       containers:
         - name: related
-          image: 841176797686.dkr.ecr.ap-south-1.amazonaws.com/upwind:latest
+          image: 841176797686.dkr.ecr.ap-south-1.amazonaws.com/upwind:IMAGE_TAG
           ports:
             - containerPort: 8001
           envFrom:
@@ -115,7 +118,7 @@ spec:
     spec:
       containers:
         - name: multiagent
-          image: 841176797686.dkr.ecr.ap-south-1.amazonaws.com/upwind:latest
+          image: 841176797686.dkr.ecr.ap-south-1.amazonaws.com/upwind:IMAGE_TAG
           ports:
             - containerPort: 8002
           envFrom:
