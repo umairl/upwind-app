@@ -46,7 +46,7 @@ metadata:
   name: suggestion-deployment
   namespace: upwind
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: suggestion
@@ -57,7 +57,7 @@ spec:
     spec:
       containers:
         - name: suggestion
-          image: 841176797686.dkr.ecr.ap-south-1.amazonaws.com/upwind:IMAGE_TAG
+          image: 841176797686.dkr.ecr.ap-south-1.amazonaws.com/upwind:latest
           ports:
             - containerPort: 8000
           envFrom:
@@ -74,7 +74,7 @@ metadata:
   name: related-deployment
   namespace: upwind
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: related
@@ -85,7 +85,7 @@ spec:
     spec:
       containers:
         - name: related
-          image: 841176797686.dkr.ecr.ap-south-1.amazonaws.com/upwind:IMAGE_TAG
+          image: 841176797686.dkr.ecr.ap-south-1.amazonaws.com/upwind:latest
           ports:
             - containerPort: 8001
           envFrom:
@@ -102,7 +102,7 @@ metadata:
   name: multiagent-deployment
   namespace: upwind
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: multiagent
@@ -113,7 +113,7 @@ spec:
     spec:
       containers:
         - name: multiagent
-          image: 841176797686.dkr.ecr.ap-south-1.amazonaws.com/upwind:IMAGE_TAG
+          image: 841176797686.dkr.ecr.ap-south-1.amazonaws.com/upwind:latest
           ports:
             - containerPort: 8002
           envFrom:
