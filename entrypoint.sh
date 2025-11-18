@@ -1,21 +1,20 @@
 #!/bin/bash
 set -e
 
-case ${SERVICE:-suggestion} in
-  suggestion)
-    cd /app/suggestion
-    exec uvicorn app:app --host 0.0.0.0 --port 8000
-    ;;
-  related)
-    cd /app/related
-    exec uvicorn app:app --host 0.0.0.0 --port 8001
-    ;;
-  multiagent)
-    cd /app/multiagent
-    exec uvicorn app:app --host 0.0.0.0 --port 8002
-    ;;
-  *)
-    echo "Unknown service: $SERVICE"
+SERVICE=${SERVICE:-suggestion}
+
+cd /app/$SERVICE
+
+# Auto-detect correct Python module file (app.py or main.py or anything else)
+if [ -f app.py ]; then
+    MODULE="app"
+elif [ -f main.py ]; then
+    MODULE="main"
+else
+    echo "ERROR: Could not find app.py or main.py in /app/$SERVICE"
+    ls -la
     exit 1
-    ;;
-esac
+fi
+
+echo "Starting service: $SERVICE (using $MODULE.py)"
+exec uvicorn ${MODULE}:app --host 0.0.0.0 --port ${PORT:-8000}
