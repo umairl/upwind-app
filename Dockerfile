@@ -1,46 +1,32 @@
 FROM python:3.9-slim
 
-# Set working directory
+# Set working dir
 WORKDIR /app
 
-# Install system dependencies
+# Install OS dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    curl \
+    build-essential curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy all service directories with their structure
+# Copy application folders
 COPY suggestion/ /app/suggestion/
 COPY related/ /app/related/
 COPY multiagent/ /app/multiagent/
-
-# Create virtual environment and install dependencies for suggestion service
-RUN cd /app/suggestion && \
-    python -m venv venv && \
-    . venv/bin/activate && \
-    pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
-
-# Create virtual environment and install dependencies for related service
-RUN cd /app/related && \
-    python -m venv venv && \
-    . venv/bin/activate && \
-    pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
-
-# Create virtual environment and install dependencies for multiagent service
-RUN cd /app/multiagent && \
-    python -m venv venv && \
-    . venv/bin/activate && \
-    pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
-
-# Copy entrypoint script
 COPY entrypoint.sh /app/entrypoint.sh
+
+# Create shared virtual environment
+RUN python -m venv /app/venv
+
+ENV PATH="/app/venv/bin:$PATH"
+
+# Install dependencies if requirements exist
+RUN if [ -f /app/suggestion/requirements.txt ]; then pip install --no-cache-dir -r /app/suggestion/requirements.txt; fi && \
+    if [ -f /app/related/requirements.txt ]; then pip install --no-cache-dir -r /app/related/requirements.txt; fi && \
+    if [ -f /app/multiagent/requirements.txt ]; then pip install --no-cache-dir -r /app/multiagent/requirements.txt; fi
+
+# Make entrypoint executable
 RUN chmod +x /app/entrypoint.sh
 
-# Expose all ports
 EXPOSE 8000 8001 8002
 
-# Use entrypoint script
 ENTRYPOINT ["/app/entrypoint.sh"]
