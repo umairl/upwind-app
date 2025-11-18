@@ -1,15 +1,10 @@
 apiVersion: v1
-kind: Namespace
-metadata:
-  name: upwind
----
-apiVersion: v1
 kind: ConfigMap
 metadata:
   name: suggestion-config
   namespace: upwind
 data:
-  SERVICE: "suggestion"  # Added this!
+  SERVICE: "suggestion"
   SERVICE_NAME: "suggestion"
   PORT: "8000"
   HOST: "0.0.0.0"
@@ -22,7 +17,7 @@ metadata:
   name: related-config
   namespace: upwind
 data:
-  SERVICE: "related"  # Added this!
+  SERVICE: "related"
   SERVICE_NAME: "related"
   PORT: "8001"
   HOST: "0.0.0.0"
@@ -35,7 +30,7 @@ metadata:
   name: multiagent-config
   namespace: upwind
 data:
-  SERVICE: "multiagent"  # Added this!
+  SERVICE: "multiagent"
   SERVICE_NAME: "multiagent"
   PORT: "8002"
   HOST: "0.0.0.0"
