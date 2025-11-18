@@ -1,0 +1,166 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: upwind
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: suggestion-config
+  namespace: upwind
+data:
+  SERVICE_NAME: "suggestion"
+  PORT: "8000"
+  HOST: "0.0.0.0"
+  LOG_LEVEL: "info"
+  ENVIRONMENT: "production"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: related-config
+  namespace: upwind
+data:
+  SERVICE_NAME: "related"
+  PORT: "8001"
+  HOST: "0.0.0.0"
+  LOG_LEVEL: "info"
+  ENVIRONMENT: "production"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: multiagent-config
+  namespace: upwind
+data:
+  SERVICE_NAME: "multiagent"
+  PORT: "8002"
+  HOST: "0.0.0.0"
+  LOG_LEVEL: "info"
+  ENVIRONMENT: "production"
+  DEFAULT_AGENT_COUNT: "3"
+  MAX_AGENT_COUNT: "10"
+  AGENT_TIMEOUT: "30"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: suggestion-deployment
+  namespace: upwind
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: suggestion
+  template:
+    metadata:
+      labels:
+        app: suggestion
+    spec:
+      containers:
+        - name: suggestion
+          image: 841176797686.dkr.ecr.ap-south-1.amazonaws.com/upwind:latest
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: suggestion-config
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: related-deployment
+  namespace: upwind
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: related
+  template:
+    metadata:
+      labels:
+        app: related
+    spec:
+      containers:
+        - name: related
+          image: 841176797686.dkr.ecr.ap-south-1.amazonaws.com/upwind:latest
+          ports:
+            - containerPort: 8001
+          envFrom:
+            - configMapRef:
+                name: related-config
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multiagent-deployment
+  namespace: upwind
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: multiagent
+  template:
+    metadata:
+      labels:
+        app: multiagent
+    spec:
+      containers:
+        - name: multiagent
+          image: 841176797686.dkr.ecr.ap-south-1.amazonaws.com/upwind:latest
+          ports:
+            - containerPort: 8002
+          envFrom:
+            - configMapRef:
+                name: multiagent-config
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: suggestion-service
+  namespace: upwind
+spec:
+  type: ClusterIP
+  selector:
+    app: suggestion
+  ports:
+    - port: 80
+      targetPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: related-service
+  namespace: upwind
+spec:
+  type: ClusterIP
+  selector:
+    app: related
+  ports:
+    - port: 80
+      targetPort: 8001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: multiagent-service
+  namespace: upwind
+spec:
+  type: ClusterIP
+  selector:
+    app: multiagent
+  ports:
+    - port: 80
+      targetPort: 8002

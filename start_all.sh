@@ -1,82 +1,113 @@
 #!/bin/bash
-# MLOps Application - Linux Start Script
-# Starts all 3 services in separate terminal tabs/windows
+# MLOps Application - Automated Start Script
 
 echo "=========================================="
 echo "MLOps Application - Starting Services"
 echo "=========================================="
 echo ""
 
-# Get script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Check if Python is installed
 if ! command -v python3 &> /dev/null; then
     echo "ERROR: Python 3 is not installed"
-    echo "Install with: sudo apt-get install python3 python3-pip python3-venv"
     exit 1
 fi
 
-echo "Starting services..."
+echo "Setting up and starting services..."
 echo ""
 
-# Function to start a service in background
+# Function to setup and start a service
 start_service() {
     local service_name=$1
     local service_dir=$2
     local port=$3
-    
-    echo "Starting $service_name on port $port..."
-    
+
+    echo "----------------------------------------"
+    echo "Setting up $service_name (port $port)"
+    echo "----------------------------------------"
+
     cd "$service_dir"
-    
+
     # Create venv if needed
     if [ ! -d "venv" ]; then
+        echo "  Creating virtual environment..."
         python3 -m venv venv
     fi
-    
-    # Activate and start
+
+    # Activate and install
+    echo "  Installing dependencies..."
     source venv/bin/activate
-    pip install -q --upgrade pip
-    pip install -q -r requirements.txt
-    
+    python -m pip install --upgrade pip setuptools wheel > /dev/null 2>&1
+    pip install -r requirements.txt
+
+    if [ $? -ne 0 ]; then
+        echo "  ✗ Failed to install dependencies for $service_name"
+        deactivate
+        cd "$SCRIPT_DIR"
+        return 1
+    fi
+
     # Load config
     if [ -f "config.env" ]; then
         export $(grep -v '^#' config.env | grep -v '^$' | xargs)
     fi
-    
+
     # Start service in background
+    echo "  Starting $service_name..."
     nohup python app.py > "${service_name}.log" 2>&1 &
     echo $! > "${service_name}.pid"
-    
-    echo "✓ $service_name started (PID: $(cat ${service_name}.pid))"
-    
+
+    echo "  ✓ $service_name started (PID: $(cat ${service_name}.pid))"
+
+    deactivate
     cd "$SCRIPT_DIR"
     sleep 2
+    return 0
 }
 
 # Start all services
 start_service "suggestion" "$SCRIPT_DIR/suggestion" 8000
+SUGG_STATUS=$?
+
 start_service "related" "$SCRIPT_DIR/related" 8001
+REL_STATUS=$?
+
 start_service "multiagent" "$SCRIPT_DIR/multiagent" 8002
+MULTI_STATUS=$?
 
 echo ""
 echo "=========================================="
-echo "All services are starting..."
+echo "Startup Summary"
 echo "=========================================="
 echo ""
-echo "Service URLs:"
-echo "  • Suggestion:  http://localhost:8000"
-echo "  • Related:     http://localhost:8001"
-echo "  • Multiagent:  http://localhost:8002"
+
+if [ $SUGG_STATUS -eq 0 ]; then
+    echo "✓ Suggestion Service:  http://localhost:8000"
+else
+    echo "✗ Suggestion Service:  FAILED"
+fi
+
+if [ $REL_STATUS -eq 0 ]; then
+    echo "✓ Related Service:     http://localhost:8001"
+else
+    echo "✗ Related Service:     FAILED"
+fi
+
+if [ $MULTI_STATUS -eq 0 ]; then
+    echo "✓ Multiagent Service:  http://localhost:8002"
+else
+    echo "✗ Multiagent Service:  FAILED"
+fi
+
 echo ""
 echo "Wait 15-20 seconds for services to fully start"
 echo "Then test with: curl http://localhost:8000/health"
 echo ""
-echo "Logs are in each service directory:"
-echo "  - suggestion/suggestion.log"
-echo "  - related/related.log"
-echo "  - multiagent/multiagent.log"
+echo "View logs:"
+echo "  tail -f suggestion/suggestion.log"
+echo "  tail -f related/related.log"
+echo "  tail -f multiagent/multiagent.log"
 echo ""
-echo "To stop services, run: ./stop_all.sh"
+echo "To stop services: ./stop_all.sh"
 echo ""
