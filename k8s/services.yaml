@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: suggestion-service
+  namespace: upwind
+spec:
+  type: ClusterIP
+  selector:
+    app: suggestion
+  ports:
+    - port: 80
+      targetPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: related-service
+  namespace: upwind
+spec:
+  type: ClusterIP
+  selector:
+    app: related
+  ports:
+    - port: 80
+      targetPort: 8001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: multiagent-service
+  namespace: upwind
+spec:
+  type: ClusterIP
+  selector:
+    app: multiagent
+  ports:
+    - port: 80
+      targetPort: 8002
