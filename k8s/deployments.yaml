@@ -15,7 +15,8 @@ spec:
     spec:
       containers:
         - name: suggestion
-          image: 841176797686.dkr.ecr.ap-south-1.amazonaws.com/upwind:latest
+          image: 841176797686.dkr.ecr.ap-south-1.amazonaws.com/upwind:IMAGE_TAG
+          imagePullPolicy: Always
           ports:
             - containerPort: 8000
           envFrom:
@@ -43,7 +44,8 @@ spec:
     spec:
       containers:
         - name: related
-          image: 841176797686.dkr.ecr.ap-south-1.amazonaws.com/upwind:latest
+          image: 841176797686.dkr.ecr.ap-south-1.amazonaws.com/upwind:IMAGE_TAG
+          imagePullPolicy: Always
           ports:
             - containerPort: 8001
           envFrom:
@@ -71,7 +73,8 @@ spec:
     spec:
       containers:
         - name: multiagent
-          image: 841176797686.dkr.ecr.ap-south-1.amazonaws.com/upwind:latest
+          image: 841176797686.dkr.ecr.ap-south-1.amazonaws.com/upwind:IMAGE_TAG
+          imagePullPolicy: Always
           ports:
             - containerPort: 8002
           envFrom:
