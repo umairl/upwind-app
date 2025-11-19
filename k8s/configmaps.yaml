@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: suggestion-config
+  namespace: upwind
+data:
+  SERVICE: "suggestion"
+  SERVICE_NAME: "suggestion"
+  PORT: "8000"
+  HOST: "0.0.0.0"
+  LOG_LEVEL: "info"
+  ENVIRONMENT: "production"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: related-config
+  namespace: upwind
+data:
+  SERVICE: "related"
+  SERVICE_NAME: "related"
+  PORT: "8001"
+  HOST: "0.0.0.0"
+  LOG_LEVEL: "info"
+  ENVIRONMENT: "production"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: multiagent-config
+  namespace: upwind
+data:
+  SERVICE: "multiagent"
+  SERVICE_NAME: "multiagent"
+  PORT: "8002"
+  HOST: "0.0.0.0"
+  LOG_LEVEL: "info"
+  ENVIRONMENT: "production"
+  DEFAULT_AGENT_COUNT: "3"
+  MAX_AGENT_COUNT: "10"
+  AGENT_TIMEOUT: "30"
