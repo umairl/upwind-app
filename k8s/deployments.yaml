@@ -26,6 +26,8 @@ spec:
             requests:
               memory: "512Mi"
               cpu: "250m"
+      imagePullSecrets:
+        - name: ecr-secret  # This links to the secret we created for ECR access
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -55,6 +57,8 @@ spec:
             requests:
               memory: "512Mi"
               cpu: "250m"
+      imagePullSecrets:
+        - name: ecr-secret  # This links to the secret we created for ECR access
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -84,3 +88,5 @@ spec:
             requests:
               memory: "512Mi"
               cpu: "250m"
+      imagePullSecrets:
+        - name: ecr-secret  # This links to the secret we created for ECR access
