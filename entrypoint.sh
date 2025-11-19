@@ -5,7 +5,6 @@ SERVICE=${SERVICE:-suggestion}
 
 cd /app/$SERVICE
 
-# Auto-detect correct Python module file (app.py or main.py or anything else)
 if [ -f app.py ]; then
     MODULE="app"
 elif [ -f main.py ]; then
